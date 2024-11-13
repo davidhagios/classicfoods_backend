@@ -12,7 +12,6 @@ from django.contrib.auth import authenticate
 from . models import menu
 
 
-
 @api_view(['POST'])
 def signin(request):
     if request.method == "POST":
