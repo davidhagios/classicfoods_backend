@@ -21,3 +21,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('auth_api.urls')),  # Add your app's URLs here
 ]
+
