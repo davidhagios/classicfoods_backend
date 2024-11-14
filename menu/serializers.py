@@ -5,3 +5,4 @@ class FoodItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = FoodItem
         fields = '__all__'
+        

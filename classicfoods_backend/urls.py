@@ -20,5 +20,6 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('auth_api.urls')),  # Add your app's URLs here
+    path('menu/', include('menu.urls')),
 ]
 

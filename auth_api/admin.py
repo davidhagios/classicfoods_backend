@@ -3,5 +3,6 @@ from . models import menu
 
 # menu Model
 @admin.register(menu)
-class TaskAdmin(admin.ModelAdmin):
+class menuAdmin(admin.ModelAdmin):
     list_display = ('user', 'title', 'is_completed', 'date', 'time', 'desc', 'date_created', )
+    
