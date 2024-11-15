@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
-from .serializers import UserSerializer, menuSerializer
+from .serializers import UserSerializer, TaskSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework import status
 from django.contrib.auth.models import User
@@ -9,7 +9,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
-from . models import menu
+from . models import Task
+
 
 
 @api_view(['POST'])
@@ -92,7 +93,7 @@ def createTask(request):
         time = request.data['time']
         desc = request.data['desc']
         
-        task = menu.objects.create(
+        task = Task.objects.create(
             user = request.user,
             title = title,
             date = date,
@@ -114,8 +115,8 @@ def createTask(request):
 @permission_classes([IsAuthenticated])
 def tasks(request):
     if request.method == "GET":
-        tasks = menu.objects.filter(user=request.user).order_by('-id')
-        serializer = menuSerializer(tasks, many=True)
+        tasks = Task.objects.filter(user=request.user).order_by('-id')
+        serializer = TaskSerializer(tasks, many=True)
         return Response({
             "tasks": serializer.data
         })
@@ -129,7 +130,7 @@ def tasks(request):
 @permission_classes([IsAuthenticated])
 def deleteTask(request, pk):
     if request.method == "DELETE":
-        my_task = menu.objects.filter(user=request.user)
+        my_task = Task.objects.filter(user=request.user)
         task = my_task.get(id=pk)
         task.delete()
         return Response({
@@ -145,7 +146,7 @@ def deleteTask(request, pk):
 @permission_classes([IsAuthenticated])
 def completeTask(request, pk):
     if request.method == "GET":
-        my_task = menu.objects.filter(user=request.user)
+        my_task = Task.objects.filter(user=request.user)
         task = my_task.get(id=pk)
         task.is_completed = True
         task.save()

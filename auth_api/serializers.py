@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from . models import menu
+from . models import Task
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -9,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'first_name', 'last_name', 'username', 'email', 'password']
         
 
-class menuSerializer(serializers.ModelSerializer):
+class TaskSerializer(serializers.ModelSerializer):
     class Meta:
-        model = menu
+        model = Task
         fields = '__all__'

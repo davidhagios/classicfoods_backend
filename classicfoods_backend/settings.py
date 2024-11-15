@@ -16,8 +16,8 @@ SECRET_KEY = 'django-insecure-*_i5st99f)q2-t4lr_tmn3#lgwv!*nhac+s+lat5$mh*szjajz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['debrah.pythonanywhere.com']
-# ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['debrah.pythonanywhere.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',   # Added for REST API
-    'menu',             # Your new app
     'rest_framework.authtoken',
     'auth_api',
     'corsheaders',
