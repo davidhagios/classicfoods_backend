@@ -3,7 +3,7 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-wal37pl+lkbt$w2m1)_fd=d8&n4$dk^@oct&!p&n!nue!p8cqy'
+SECRET_KEY = 'django-insecure-*_i5st99f)q2-t4lr_tmn3#lgwv!*nhac+s+lat5$mh*szjajz'
 DEBUG = False
 
 ALLOWED_HOSTS = ['debrah.pythonanywhere.com']
@@ -32,7 +32,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'server.urls'
+ROOT_URLCONF = 'classicfoods_backend.urls'
 
 TEMPLATES = [
     {
@@ -50,7 +50,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'server.wsgi.application'
+WSGI_APPLICATION = 'classicfoods_backend.wsgi.application'
 
 
 # Database
@@ -104,6 +104,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
-    "https://donzytasks.netlify.app"
+    "https://debrahdavid1.netlify.app"
 ]
 
