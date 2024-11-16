@@ -14,3 +14,7 @@ class Task(models.Model):
     
     def __str__(self):
         return self.title
+    
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    picture = models.ImageField(upload_to="Profile_Pictures")

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
-from .serializers import UserSerializer, TaskSerializer
+from .serializers import UserSerializer, TaskSerializer, PictureSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework import status
 from django.contrib.auth.models import User
@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
-from . models import Task
+from . models import Task, Profile
 
 
 
@@ -76,11 +76,39 @@ def signup(request):
 @permission_classes([IsAuthenticated])
 def get_user(request):
     serializer = UserSerializer(request.user, many=False)
+    profile = Profile.objects.filter(user=request.user).first()
+    picture = PictureSerializer(profile, many=False).data
+    
     return Response({
-        "user": serializer.data
+        "user": serializer.data,
+        'picture':request.build_absolute_uri(picture['picture'])
     })
     
  
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])   
+def uploadPicture(request):
+    if request.method == "POST":
+        img = request.data.get('picture')
+        if Profile.objects.filter(user=request.user):
+            profile = Profile.objects.filter(user=request.user).first()
+            profile.picture = img
+            profile.save()
+            return Response({
+                "status":"success",
+                "message":"Profile picture updated"
+            })
+        else:
+            picture = Profile.objects.create(
+                user = request.user,
+                picture = img
+            )
+            picture.save()
+            return Response({
+                "status":"success",
+                "message": "Profile picture updated"
+            })
  
 
 @api_view(['POST'])

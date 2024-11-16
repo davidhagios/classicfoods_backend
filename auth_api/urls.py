@@ -5,6 +5,7 @@ urlpatterns = [
     path('signup', views.signup, name='signup'),
     path('signin', views.signin, name='signin'),
     path('get_user', views.get_user, name='get_user'),
+    path('uploadPicture', views.uploadPicture, name='uploadPicture'),
     path('create-task', views.createTask, name='create-task'),
     path('tasks', views.tasks, name='tasks'),
     path('delete-task/<str:pk>', views.deleteTask, name='deleteTask'),
