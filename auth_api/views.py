@@ -10,6 +10,8 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
 from . models import Task, Profile
+from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 
@@ -110,7 +112,20 @@ def uploadPicture(request):
                 "message": "Profile picture updated"
             })
  
+class ProfileImageView(APIView):
+    parser_classes = [MultiPartParser, FormParser]
 
+    def post(self, request, *args, **kwargs):
+        profile = Profile.objects.get(user=request.user)
+        profile.profile_image = request.data.get('profile_image')
+        profile.save()
+        return Response({"message": "Image uploaded successfully"}, status=status.HTTP_200_OK)
+
+    def get(self, request, *args, **kwargs):
+        profile = Profile.objects.get(user=request.user)
+        return Response({"profile_image": profile.profile_image.url}, status=status.HTTP_200_OK)
+    
+    
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])   
