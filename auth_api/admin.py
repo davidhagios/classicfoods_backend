@@ -10,4 +10,4 @@ class TaskAdmin(admin.ModelAdmin):
 class PictureAdmin(admin.ModelAdmin):
     list_display = ['user', 'picture'] 
     
-admin.site.register(Profile, ProfileAdmin)
+admin.site.register(Profile, PictureAdmin)
