@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
-from .serializers import UserSerializer, PictureSerializer, ProfileSerializer
+from .serializers import UserSerializer, ProfileSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework import status
 from django.contrib.auth.models import User
@@ -79,11 +79,11 @@ def signup(request):
 def get_user(request):
     serializer = UserSerializer(request.user, many=False)
     profile = Profile.objects.filter(user=request.user).first()
-    picture = PictureSerializer(profile, many=False).data
+    profile_picture = ProfileSerializer(profile, many=False).data
     
     return Response({
         "user": serializer.data,
-        'picture':request.build_absolute_uri(picture['picture'])
+        'profile_picture':request.build_absolute_uri(profile_picture['profile_picture'])
     })
 
 
