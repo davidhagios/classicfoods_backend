@@ -7,7 +7,7 @@ class TaskAdmin(admin.ModelAdmin):
     list_display = ('user', 'title', 'is_completed', 'date', 'time', 'desc', 'date_created', )
    
    
-class PictureAdmin(admin.ModelAdmin):
+class ProfileAdmin(admin.ModelAdmin):
     list_display = ['user', 'picture'] 
     
-admin.site.register(Profile, PictureAdmin)
+admin.site.register(Profile, ProfileAdmin)
