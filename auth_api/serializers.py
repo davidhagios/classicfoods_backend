@@ -18,4 +18,4 @@ class TaskSerializer(serializers.ModelSerializer):
 class PictureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['picture']
+        fields = ['profile_picture']

@@ -10,7 +10,12 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
 from . models import Task, Profile
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.permissions import IsAuthenticated
+from .models import Profile
+from .serializers import ProfileSerializer
 
 
 @api_view(['POST'])
@@ -83,107 +88,127 @@ def get_user(request):
         "user": serializer.data,
         'picture':request.build_absolute_uri(picture['picture'])
     })
-    
+
+
+class ProfilePictureView(APIView):
+    parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        serializer = ProfileSerializer(profile, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'Profile picture uploaded successfully!', 'data': serializer.data})
+        return Response(serializer.errors, status=400)
+
+    def get(self, request):
+        try:
+            profile = Profile.objects.get(user=request.user)
+            serializer = ProfileSerializer(profile)
+            return Response(serializer.data)
+        except Profile.DoesNotExist:
+            return Response({'error': 'Profile not found'}, status=404)    
  
-@api_view(['POST'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])   
-def uploadPicture(request):
-    if request.method == "POST":
-        img = request.data.get('picture')
-        if Profile.objects.filter(user=request.user):
-            profile = Profile.objects.filter(user=request.user).first()
-            profile.picture = img
-            profile.save()
-            return Response({
-                "status":"success",
-                "message":"Profile picture updated"
-            })
-        else:
-            picture = Profile.objects.create(
-                user = request.user,
-                picture = img
-            )
-            picture.save()
-            return Response({
-                "status":"success",
-                "message": "Profile picture updated"
-            })
+# @api_view(['POST'])
+# @authentication_classes([SessionAuthentication, TokenAuthentication])
+# @permission_classes([IsAuthenticated])   
+# def uploadPicture(request):
+#     if request.method == "POST":
+#         img = request.data.get('picture')
+#         if Profile.objects.filter(user=request.user):
+#             profile = Profile.objects.filter(user=request.user).first()
+#             profile.picture = img
+#             profile.save()
+#             return Response({
+#                 "status":"success",
+#                 "message":"Profile picture updated"
+#             })
+#         else:
+#             picture = Profile.objects.create(
+#                 user = request.user,
+#                 picture = img
+#             )
+#             picture.save()
+#             return Response({
+#                 "status":"success",
+#                 "message": "Profile picture updated"
+#             })
  
 
-@api_view(['POST'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])   
-def createTask(request):
-    if request.method == "POST":
-        title = request.data['title']
-        date = request.data['date']
-        time = request.data['time']
-        desc = request.data['desc']
+# @api_view(['POST'])
+# @authentication_classes([SessionAuthentication, TokenAuthentication])
+# @permission_classes([IsAuthenticated])   
+# def createTask(request):
+#     if request.method == "POST":
+#         title = request.data['title']
+#         date = request.data['date']
+#         time = request.data['time']
+#         desc = request.data['desc']
         
-        task = Task.objects.create(
-            user = request.user,
-            title = title,
-            date = date,
-            time = time,
-            desc = desc
-        )
-        task.save()
-        return Response({
-            "status":"created",
-            "message": f"{title} created successfully"
-        })
+#         task = Task.objects.create(
+#             user = request.user,
+#             title = title,
+#             date = date,
+#             time = time,
+#             desc = desc
+#         )
+#         task.save()
+#         return Response({
+#             "status":"created",
+#             "message": f"{title} created successfully"
+#         })
     
-    else:
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+#     else:
+#         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         
         
-@api_view(['GET'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def tasks(request):
-    if request.method == "GET":
-        tasks = Task.objects.filter(user=request.user).order_by('-id')
-        serializer = TaskSerializer(tasks, many=True)
-        return Response({
-            "tasks": serializer.data
-        })
-    else:
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+# @api_view(['GET'])
+# @authentication_classes([SessionAuthentication, TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+# def tasks(request):
+#     if request.method == "GET":
+#         tasks = Task.objects.filter(user=request.user).order_by('-id')
+#         serializer = TaskSerializer(tasks, many=True)
+#         return Response({
+#             "tasks": serializer.data
+#         })
+#     else:
+#         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 
-@api_view(['DELETE'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def deleteTask(request, pk):
-    if request.method == "DELETE":
-        my_task = Task.objects.filter(user=request.user)
-        task = my_task.get(id=pk)
-        task.delete()
-        return Response({
-            "status":"deleted",
-            "message": f"{task.title} deleted successfully"
-        })
-    else:
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+# @api_view(['DELETE'])
+# @authentication_classes([SessionAuthentication, TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+# def deleteTask(request, pk):
+#     if request.method == "DELETE":
+#         my_task = Task.objects.filter(user=request.user)
+#         task = my_task.get(id=pk)
+#         task.delete()
+#         return Response({
+#             "status":"deleted",
+#             "message": f"{task.title} deleted successfully"
+#         })
+#     else:
+#         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-@api_view(['GET'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def completeTask(request, pk):
-    if request.method == "GET":
-        my_task = Task.objects.filter(user=request.user)
-        task = my_task.get(id=pk)
-        task.is_completed = True
-        task.save()
-        return Response({
-            "status":"completed",
-            "message": f"{task.title} completed successfully"
-        })
-    else:
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+# @api_view(['GET'])
+# @authentication_classes([SessionAuthentication, TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+# def completeTask(request, pk):
+#     if request.method == "GET":
+#         my_task = Task.objects.filter(user=request.user)
+#         task = my_task.get(id=pk)
+#         task.is_completed = True
+#         task.save()
+#         return Response({
+#             "status":"completed",
+#             "message": f"{task.title} completed successfully"
+#         })
+#     else:
+#         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 
