@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
-from .serializers import UserSerializer, TaskSerializer, PictureSerializer
+from .serializers import UserSerializer, PictureSerializer, ProfileSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework import status
 from django.contrib.auth.models import User
@@ -9,13 +9,9 @@ from django.shortcuts import get_object_or_404
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
-from . models import Task, Profile
+from . models import Profile
 from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.permissions import IsAuthenticated
-from .models import Profile
-from .serializers import ProfileSerializer
 
 
 @api_view(['POST'])
